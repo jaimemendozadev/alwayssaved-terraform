@@ -1,7 +1,7 @@
 resource "aws_vpc" "notecasts_vpc" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  cidr_block           = "10.0.0.0/16" # Defines the private IP range (can hold up to ~65,000 IPs).
+  enable_dns_support   = true          # Allows instances in this VPC to resolve DNS hostnames.
+  enable_dns_hostnames = true          # Assigns DNS hostnames to instances for easier management.
 
   tags = {
     Name = "notecasts-vpc"
@@ -11,8 +11,8 @@ resource "aws_vpc" "notecasts_vpc" {
 
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.notecasts_vpc.id
-  cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
+  cidr_block              = "10.0.1.0/24" # Allocates a smaller chunk of IPs for this subnet (~256 IPs).
+  map_public_ip_on_launch = true          # Ensures instances launched in this subnet get a public IP.
   availability_zone       = "us-east-1a"
 
   tags = {
