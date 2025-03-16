@@ -60,3 +60,29 @@ resource "aws_security_group" "notecasts_sg" {
     Name = "notecasts-sg"
   }
 }
+
+resource "aws_internet_gateway" "notecasts_igw" {
+  vpc_id = aws_vpc.notecasts_vpc.id
+
+  tags = {
+    Name = "notecasts-igw"
+  }
+}
+
+resource "aws_route_table" "notecasts_rt" {
+  vpc_id = aws_vpc.notecasts_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.notecasts_igw.id
+  }
+
+  tags = {
+    Name = "notecasts-route-table"
+  }
+}
+
+resource "aws_route_table_association" "notecasts_rta" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.notecasts_rt.id
+}
