@@ -1,3 +1,24 @@
+# Principal = "ec2.amazonaws.com" -> Allows EC2 instances to use this role.
+# sts:AssumeRole -> Lets EC2 instances temporarily "borrow" the role’s permissions.
+resource "aws_iam_role" "notecasts_ec2_role" {
+  name = "notecasts-ec2-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_policy" "notecasts_ec2_policy" {
   name        = "NotecastsEC2Policy"
   description = "Allows EC2 instances to access S3, SQS, and Parameter Store"
@@ -44,4 +65,11 @@ EOF
 resource "aws_iam_role_policy_attachment" "attach_ec2_policy" {
   role       = aws_iam_role.notecasts_ec2_role.name
   policy_arn = aws_iam_policy.notecasts_ec2_policy.arn
+}
+
+# Creates an Instance Profile, which is required for EC2 instances to use IAM roles.
+# Links the IAM Role `notecasts-ec2-role` to the profile.
+resource "aws_iam_instance_profile" "notecasts_instance_profile" {
+  name = "notecasts-instance-profile"
+  role = aws_iam_role.notecasts_ec2_role.name
 }
