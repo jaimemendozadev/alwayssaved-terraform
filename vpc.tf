@@ -31,7 +31,7 @@ resource "aws_security_group" "notecasts_sg" {
     cidr_blocks = ["0.0.0.0/0"] # 🔴 Replace this with GitHub's IPs later for security
   }
 
-  
+
   # Allow inbound HTTP/HTTPS for API
   ingress {
     from_port   = 80
