@@ -14,5 +14,5 @@ resource "aws_instance" "audio_extractor" {
 
 resource "aws_key_pair" "notecasts_key" {
   key_name   = "notecasts-key"
-  public_key = file("~/.ssh/${var.aws_pub_key_file_name}")
+  public_key = file("~/.ssh/jm-aws-key-pair-num2-03162025.pub")
 }
