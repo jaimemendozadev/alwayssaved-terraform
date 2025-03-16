@@ -34,7 +34,7 @@ resource "aws_iam_policy" "notecasts_ec2_policy" {
         "ssm:GetParameters",
         "ssm:GetParametersByPath"
       ],
-      "Resource": "arn:aws:ssm:us-east-1:YOUR_ACCOUNT_ID:parameter/notecasts/*"
+      "Resource": "arn:aws:ssm:us-east-1:${var.aws_account_id}:parameter/notecasts/*"
     }
   ]
 }
