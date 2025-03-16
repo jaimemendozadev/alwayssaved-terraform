@@ -12,3 +12,8 @@ variable "aws_instance_type" {
   description = "AWS Instance Type"
   type        = string
 }
+
+variable "aws_pub_key_file_path" {
+  description = "AWS Public Key File Path"
+  type        = string
+}
