@@ -13,7 +13,12 @@ variable "aws_instance_type" {
   type        = string
 }
 
-variable "aws_pub_key_file_path" {
-  description = "AWS Public Key File Path"
+variable "aws_pub_key_name" {
+  description = "AWS Public Key File Name"
   type        = string
+}
+
+variable "aws_region" {
+  description = "AWS Region"
+  type = string
 }
