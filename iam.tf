@@ -55,9 +55,9 @@ resource "aws_iam_policy" "notecasts_ec2_policy" {
         "ssm:GetParameters",
         "ssm:GetParametersByPath"
       ],
-      "Resource": "arn:aws:ssm:us-east-1:${var.aws_account_id}:parameter/notecasts/*"
+      "Resource": "*"
     },
-        {
+    {
       "Effect": "Allow",
       "Action": [
         "codedeploy:CreateDeployment",
@@ -109,4 +109,9 @@ EOF
 resource "aws_iam_role_policy_attachment" "attach_codedeploy_service_policy" {
   role       = aws_iam_role.notecasts_codedeploy_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+}
+
+resource "aws_iam_role_policy_attachment" "attach_ssm_managed_policy" {
+  role       = aws_iam_role.notecasts_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
