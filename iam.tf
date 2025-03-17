@@ -85,7 +85,7 @@ resource "aws_iam_instance_profile" "notecasts_instance_profile" {
 }
 
 
-# CodeDeploy needs its own IAM role to manage deployments.
+# 1️⃣ CodeDeploy needs its own IAM role to manage deployments.
 resource "aws_iam_role" "notecasts_codedeploy_role" {
   name = "notecasts-codedeploy-role"
 
@@ -105,6 +105,7 @@ resource "aws_iam_role" "notecasts_codedeploy_role" {
 EOF
 }
 
+# 2️⃣ Attach CodeDeploy Service Role Policy
 resource "aws_iam_role_policy_attachment" "attach_codedeploy_service_policy" {
   role       = aws_iam_role.notecasts_codedeploy_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
