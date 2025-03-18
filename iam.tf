@@ -17,9 +17,6 @@ resource "aws_iam_role" "notecasts_ec2_role" {
   ]
 }
 EOF
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_iam_policy" "notecasts_ec2_policy" {
