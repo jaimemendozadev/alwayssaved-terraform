@@ -20,5 +20,10 @@ variable "aws_pub_key_name" {
 
 variable "aws_region" {
   description = "AWS Region"
-  type = string
+  type        = string
+}
+
+variable "aws_s3_code_bucket_name" {
+  description = "AWS s3 Code Bucket Name"
+  type        = string
 }

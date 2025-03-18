@@ -38,6 +38,14 @@ resource "aws_iam_policy" "notecasts_ec2_policy" {
     {
       "Effect": "Allow",
       "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "sqs:SendMessage",
         "sqs:ReceiveMessage",
         "sqs:DeleteMessage",
@@ -56,16 +64,6 @@ resource "aws_iam_policy" "notecasts_ec2_policy" {
         "ssm:GetParametersByPath"
       ],
       "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "codedeploy:CreateDeployment",
-        "codedeploy:GetDeployment",
-        "codedeploy:GetDeploymentConfig",
-        "codedeploy:RegisterApplicationRevision"
-      ],
-      "Resource": "*"
     }
   ]
 }
@@ -82,33 +80,6 @@ resource "aws_iam_role_policy_attachment" "attach_ec2_policy" {
 resource "aws_iam_instance_profile" "notecasts_instance_profile" {
   name = "notecasts-instance-profile"
   role = aws_iam_role.notecasts_ec2_role.name
-}
-
-
-# 1️⃣ CodeDeploy needs its own IAM role to manage deployments.
-resource "aws_iam_role" "notecasts_codedeploy_role" {
-  name = "notecasts-codedeploy-role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "codedeploy.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-# 2️⃣ Attach CodeDeploy Service Role Policy
-resource "aws_iam_role_policy_attachment" "attach_codedeploy_service_policy" {
-  role       = aws_iam_role.notecasts_codedeploy_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
 
 resource "aws_iam_role_policy_attachment" "attach_ssm_managed_policy" {
