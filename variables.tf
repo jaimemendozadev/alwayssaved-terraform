@@ -3,8 +3,8 @@ variable "aws_account_id" {
   type        = string
 }
 
-variable "aws_ami_id" {
-  description = "AWS AMI ID"
+variable "ubuntu_ami_id" {
+  description = "Ubuntu AMI ID"
   type        = string
 }
 
