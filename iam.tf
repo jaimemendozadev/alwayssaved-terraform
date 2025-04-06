@@ -64,6 +64,16 @@ resource "aws_iam_policy" "notecasts_ec2_policy" {
         "ssm:GetParametersByPath"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+      ],
+      "Resource": "*"
     }
   ]
 }

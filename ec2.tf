@@ -1,6 +1,6 @@
 resource "aws_instance" "audio_extractor" {
   ami                         = var.ubuntu_ami_id # Ubuntu AMI (Replace in `variables.tf`)
-  instance_type               = "t3.large" # Equivalent to t2.large
+  instance_type               = "t3.large"        # Equivalent to t2.large
   subnet_id                   = aws_subnet.public_subnet.id
   security_groups             = [aws_security_group.notecasts_sg.id]
   associate_public_ip_address = true
