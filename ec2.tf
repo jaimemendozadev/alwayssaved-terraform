@@ -23,11 +23,11 @@ sudo systemctl start docker
 sudo usermod -aG docker ubuntu
 
 echo "==== Authenticating Docker with AWS ECR ===="
-aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin {NOTECASTS_ECR_URL}
+aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${var.aws_ecr_extractor_service_url}
 
 echo "==== Pulling & Running Notecasts Extractor Container ===="
-sudo docker pull {NOTECASTS_ECR_URL}/notecasts-extractor:latest
-sudo docker run -d --name notecasts-extractor -v /home/ubuntu/notecasts:/app {NOTECASTS_ECR_URL}/notecasts-extractor:latest
+sudo docker pull ${var.aws_ecr_extractor_service_url}
+sudo docker run -d --name notecasts-extractor -v /home/ubuntu/notecasts:/app ${var.aws_ecr_extractor_service_url}
 
 echo "Deployment complete!"
 EOF

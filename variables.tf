@@ -27,3 +27,8 @@ variable "aws_s3_code_bucket_name" {
   description = "AWS s3 Code Bucket Name"
   type        = string
 }
+
+variable "aws_ecr_extractor_service_url" {
+  description = "AWS ECR Url for Extractor Service"
+  type        = string
+}
