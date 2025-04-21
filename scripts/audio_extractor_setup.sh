@@ -34,4 +34,35 @@ echo "==== Pulling and Running Notecasts Extractor Container ===="
 sudo docker pull ${ECR_URL}
 sudo docker run -d --name notecasts-extractor ${ECR_URL}
 
+echo "==== Installing CloudWatch Agent ===="
+wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/arm64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
+sudo dpkg -i /tmp/amazon-cloudwatch-agent.deb
+
+echo "==== Creating CloudWatch Agent Config ===="
+sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /dev/null <<EOF
+{
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/lib/docker/containers/*/*.log",
+            "log_group_name": "/notecasts/transcriber",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 14
+          }
+        ]
+      }
+    }
+  }
+}
+EOF
+
+echo "==== Starting CloudWatch Agent ===="
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config \
+  -m ec2 \
+  -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
+  -s
+
 echo "==== Deployment Complete ===="
