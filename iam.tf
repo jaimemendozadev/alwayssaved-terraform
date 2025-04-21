@@ -96,3 +96,8 @@ resource "aws_iam_role_policy_attachment" "attach_ssm_managed_policy" {
   role       = aws_iam_role.notecasts_ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+
+resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy" {
+  role       = aws_iam_role.notecasts_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
