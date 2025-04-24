@@ -53,7 +53,7 @@ resource "aws_iam_policy" "notecasts_ec2_policy" {
       ],
       "Resource": [
         "${aws_sqs_queue.extractor_push_queue.arn}",
-        "${aws_sqs_queue.extractor_pull_queue.arn}"
+        "${aws_sqs_queue.embedding_push_queue.arn}"
       ]
     },
     {
