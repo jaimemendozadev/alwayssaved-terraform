@@ -11,6 +11,11 @@ resource "aws_instance" "audio_extractor" {
     ECR_URL = var.aws_ecr_extractor_service_url
   })
 
+  root_block_device {
+    volume_size = 64 # in GB
+    volume_type = "gp3"
+  }
+
 
   tags = {
     Name = "notecasts-audio-extractor"
