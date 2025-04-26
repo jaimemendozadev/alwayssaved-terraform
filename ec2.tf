@@ -1,5 +1,5 @@
 resource "aws_instance" "audio_extractor" {
-  ami                         = var.ubuntu_ami_id # Ubuntu AMI (Replace in `variables.tf`)
+  ami                         = var.ubuntu_ami_id
   instance_type               = var.aws_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
   security_groups             = [aws_security_group.notecasts_sg.id]
@@ -12,10 +12,9 @@ resource "aws_instance" "audio_extractor" {
   })
 
   root_block_device {
-    volume_size = 64 # in GB
+    volume_size = 100 # 🔥 Increase to 100 GB for plenty of breathing room
     volume_type = "gp3"
   }
-
 
   tags = {
     Name = "notecasts-audio-extractor"
