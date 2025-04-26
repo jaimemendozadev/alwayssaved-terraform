@@ -8,13 +8,18 @@ echo "==== Updating System & Installing Base Dependencies ===="
 sudo apt-get update -y
 sudo apt-get install -y unzip systemd curl gnupg lsb-release
 
-echo "==== Installing AWS CLI via Official Installer ===="
-cd /tmp
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-
-unzip -q awscliv2.zip
-sudo ./aws/install
-sudo ln -s /usr/local/bin/aws /usr/bin/aws || true
+echo "==== Checking for AWS CLI ===="
+if ! command -v aws &> /dev/null
+then
+    echo "AWS CLI not found, installing..."
+    cd /tmp
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip -q awscliv2.zip
+    sudo ./aws/install
+    sudo ln -s /usr/local/bin/aws /usr/bin/aws || true
+else
+    echo "AWS CLI already installed, skipping install."
+fi
 
 echo "==== Verifying AWS CLI ===="
 aws --version
@@ -31,9 +36,8 @@ distribution=$(. /etc/os-release; echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
 curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
 sudo apt-get update
-sudo apt-get install -y nvidia-docker2
+sudo apt-get install -o Dpkg::Options::="--force-confold" -y nvidia-docker2
 sudo systemctl restart docker
-
 
 echo "==== Waiting for Docker Daemon to Settle ===="
 sleep 10
@@ -47,7 +51,7 @@ sudo docker run --gpus all -d --name notecasts-extractor ${ECR_URL}
 
 echo "==== Installing CloudWatch Agent ===="
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
-sudo dpkg -i /tmp/amazon-cloudwatch-agent.deb
+sudo dpkg -i /tmp/amazoncloudwatch-agent.deb
 
 echo "==== Creating CloudWatch Agent Config ===="
 sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /dev/null <<EOF
