@@ -4,6 +4,12 @@ set -e
 echo "==== Log everything to a file and to the EC2 console ===="
 exec > >(tee /var/log/notecasts_setup.log | logger -t user-data -s 2>/dev/console) 2>&1
 
+echo "==== Waiting for any automatic apt processes to finish ===="
+while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+  echo "Another apt process is running. Waiting..."
+  sleep 5
+done
+
 echo "==== Updating System & Installing Base Dependencies ===="
 sudo apt-get update -y
 sudo apt-get install -y unzip systemd curl gnupg lsb-release
@@ -39,7 +45,7 @@ sudo apt-get update
 sudo apt-get install -o Dpkg::Options::="--force-confold" -y nvidia-docker2
 sudo systemctl restart docker
 
-echo "==== Waiting for Docker Daemon to Settle ===="
+echo "==== Waiting for Docker Daemon and NVIDIA Toolkit to Settle ===="
 sleep 10
 
 echo "==== Authenticating Docker with AWS ECR ===="
@@ -51,7 +57,7 @@ sudo docker run --gpus all -d --name notecasts-extractor ${ECR_URL}
 
 echo "==== Installing CloudWatch Agent ===="
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
-sudo dpkg -i /tmp/amazoncloudwatch-agent.deb
+sudo dpkg -i /tmp/amazon-cloudwatch-agent.deb
 
 echo "==== Creating CloudWatch Agent Config ===="
 sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /dev/null <<EOF
