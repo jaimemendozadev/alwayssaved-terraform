@@ -98,7 +98,7 @@ resource "aws_iam_role_policy_attachment" "attach_ec2_policy" {
 # Creates an Instance Profile, which is required for EC2 instances to use IAM roles.
 # Links the IAM Role `always-saved-ec2-role` to the profile.
 resource "aws_iam_instance_profile" "always_saved_instance_profile" {
-  name = "notecasts-instance-profile"
+  name = "always-saved-instance-profile"
   role = aws_iam_role.always_saved_ec2_role.name
 }
 
