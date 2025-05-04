@@ -1,12 +1,12 @@
 resource "aws_sqs_queue" "extractor_push_queue" {
-  name                       = "notecasts-extractor-push"
+  name                       = "always-saved-extractor-push"
   visibility_timeout_seconds = 60
   message_retention_seconds  = 86400
   fifo_queue                 = false
 }
 
 resource "aws_sqs_queue" "embedding_push_queue" {
-  name                       = "notecasts-extractor-pull"
+  name                       = "always-saved-extractor-pull"
   visibility_timeout_seconds = 60
   message_retention_seconds  = 86400
   fifo_queue                 = false
