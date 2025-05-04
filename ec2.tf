@@ -17,7 +17,7 @@ resource "aws_instance" "audio_extractor" {
   }
 
   tags = {
-    Name = "notecasts-audio-extractor"
+    Name = "always-saved-audio-extractor"
   }
 }
 
