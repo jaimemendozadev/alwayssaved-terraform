@@ -2,7 +2,7 @@
 set -e
 
 echo "==== Log everything to a file and to the EC2 console ===="
-exec > >(tee /var/log/notecasts_setup.log | logger -t user-data -s 2>/dev/console) 2>&1
+exec > >(tee /var/log/always_saved_setup.log | logger -t user-data -s 2>/dev/console) 2>&1
 
 echo "==== Waiting for any automatic apt processes to finish ===="
 while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
@@ -51,9 +51,9 @@ sleep 10
 echo "==== Authenticating Docker with AWS ECR ===="
 aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${ECR_URL}
 
-echo "==== Pulling and Running Notecasts Extractor Container (with GPU) ===="
+echo "==== Pulling and Running AlwaysSaved Extractor Container (with GPU) ===="
 sudo docker pull ${ECR_URL}
-sudo docker run --gpus all -d --name notecasts-extractor ${ECR_URL}
+sudo docker run --gpus all -d --name always-saved-extractor ${ECR_URL}
 
 echo "==== Installing CloudWatch Agent ===="
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
@@ -68,7 +68,7 @@ sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /de
         "collect_list": [
           {
             "file_path": "/var/lib/docker/containers/*/*.log",
-            "log_group_name": "/notecasts/transcriber",
+            "log_group_name": "/alwayssaved/transcriber",
             "log_stream_name": "{instance_id}",
             "retention_in_days": 14
           }
