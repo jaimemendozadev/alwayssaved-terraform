@@ -29,6 +29,7 @@ resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+# TODO: Need to create a new /alwayssaved s3 Bucket
 resource "aws_iam_policy" "always_saved_ec2_policy" {
   name        = "AlwaysSavedEC2Policy"
   description = "Allows EC2 instances to access S3, SQS, and Parameter Store"
