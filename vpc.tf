@@ -57,7 +57,7 @@ resource "aws_security_group" "always_saved_sg" {
   }
 
   tags = {
-    Name = "notecasts-sg"
+    Name = "always-saved-sg"
   }
 }
 
@@ -65,7 +65,7 @@ resource "aws_internet_gateway" "always_saved_igw" {
   vpc_id = aws_vpc.always_saved_vpc.id
 
   tags = {
-    Name = "notecasts-igw"
+    Name = "always-saved-igw"
   }
 }
 
