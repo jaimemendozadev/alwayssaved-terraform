@@ -2,7 +2,7 @@ resource "aws_instance" "audio_extractor" {
   ami                         = var.ubuntu_ami_id
   instance_type               = var.aws_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
-  security_groups             = [aws_security_group.notecasts_sg.id]
+  security_groups             = [aws_security_group.always_saved_sg.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.notecasts_instance_profile.name
   key_name                    = var.aws_pub_key_name
