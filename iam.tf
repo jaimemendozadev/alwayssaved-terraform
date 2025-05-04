@@ -19,6 +19,16 @@ resource "aws_iam_role" "notecasts_ec2_role" {
 EOF
 }
 
+resource "aws_iam_role_policy_attachment" "attach_ssm_managed_policy" {
+  role       = aws_iam_role.notecasts_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy" {
+  role       = aws_iam_role.notecasts_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
 resource "aws_iam_policy" "notecasts_ec2_policy" {
   name        = "NotecastsEC2Policy"
   description = "Allows EC2 instances to access S3, SQS, and Parameter Store"
@@ -92,12 +102,3 @@ resource "aws_iam_instance_profile" "notecasts_instance_profile" {
   role = aws_iam_role.notecasts_ec2_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "attach_ssm_managed_policy" {
-  role       = aws_iam_role.notecasts_ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy" {
-  role       = aws_iam_role.notecasts_ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-}
