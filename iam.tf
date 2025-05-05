@@ -40,7 +40,6 @@ resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy" {
 
 
 # Original ec2 IAM Policy for Extractor Service
-# TODO: Need to create a new /alwayssaved s3 Bucket
 resource "aws_iam_policy" "always_saved_ec2_policy" {
   name        = "AlwaysSavedEC2Policy"
   description = "Allows EC2 instances to access S3, SQS, and Parameter Store"
@@ -55,7 +54,7 @@ resource "aws_iam_policy" "always_saved_ec2_policy" {
         "s3:PutObject",
         "s3:GetObject"
       ],
-      "Resource": "arn:aws:s3:::notecasts/*"
+      "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
     },
     {
       "Effect": "Allow",
@@ -155,7 +154,6 @@ resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy_to_emb
 
 
 # ec2 IAM Policy for Embedding Service
-# TODO: Need to create a new /alwayssaved s3 Bucket
 resource "aws_iam_policy" "always_saved_embedding_ec2_policy" {
   name        = "AlwaysSavedEmbeddingEC2Policy"
   description = "Allows Embedding EC2 instances to access S3, SQS, and Parameter Store"
@@ -169,7 +167,7 @@ resource "aws_iam_policy" "always_saved_embedding_ec2_policy" {
       "Action": [
         "s3:GetObject"
       ],
-      "Resource": "arn:aws:s3:::notecasts/*"
+      "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
     },
     {
       "Effect": "Allow",
