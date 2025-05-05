@@ -28,7 +28,7 @@ resource "aws_instance" "embedding_service" {
   subnet_id                   = aws_subnet.public_subnet.id
   security_groups             = [aws_security_group.always_saved_sg.id]
   associate_public_ip_address = false
-  iam_instance_profile        = aws_iam_instance_profile.always_saved_embedding_instance_profile
+  iam_instance_profile        = aws_iam_instance_profile.always_saved_embedding_instance_profile.name
   key_name                    = var.aws_pub_key_name
 
   user_data = templatefile("${path.module}/scripts/embedding_service_setup.sh", {
