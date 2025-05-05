@@ -60,7 +60,7 @@ aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS
 
 echo "==== Pulling and Running AlwaysSaved Embedding Container ===="
 sudo docker pull ${ECR_URL}
-sudo docker run --gpus all -d --name always-saved-embedding ${ECR_URL}
+sudo docker run -d --name always-saved-embedding ${ECR_URL}
 
 echo "==== Installing CloudWatch Agent ===="
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
