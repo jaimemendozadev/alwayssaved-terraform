@@ -35,12 +35,12 @@ variable "aws_ecr_extractor_service_url" {
 
 variable "embedding_ami_id" {
   description = "ami ID for Embedding Service"
-  type = string
+  type        = string
 }
 
 variable "embedding_instance_type" {
   description = "AWS Instance Type for Embedding Service"
-  type = string
+  type        = string
 }
 
 variable "aws_ecr_embedding_service_url" {

@@ -2,10 +2,8 @@
 # Extractor Service
 #################################################
 
-
 # Principal = "ec2.amazonaws.com" -> Allows EC2 instances to use this role.
 # sts:AssumeRole -> Lets EC2 instances temporarily "borrow" the role’s permissions.
-
 
 # Original ec2 Role for Extractor Service
 resource "aws_iam_role" "always_saved_ec2_role" {
@@ -27,7 +25,6 @@ resource "aws_iam_role" "always_saved_ec2_role" {
 EOF
 }
 
-
 resource "aws_iam_role_policy_attachment" "attach_ssm_managed_policy" {
   role       = aws_iam_role.always_saved_ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
@@ -37,7 +34,6 @@ resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy" {
   role       = aws_iam_role.always_saved_ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
-
 
 # Original ec2 IAM Policy for Extractor Service
 resource "aws_iam_policy" "always_saved_ec2_policy" {
@@ -51,18 +47,15 @@ resource "aws_iam_policy" "always_saved_ec2_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "s3:PutObject",
-        "s3:GetObject"
+        "s3:GetObject",
+        "s3:PutObject"
       ],
       "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:ListBucket"
-      ],
-      "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}"
     },
     {
       "Effect": "Allow",
@@ -115,12 +108,9 @@ resource "aws_iam_instance_profile" "always_saved_instance_profile" {
 }
 
 
-
 #################################################
 # Embedding Service
 #################################################
-
-
 
 # ec2 Role for Embedding Service 
 resource "aws_iam_role" "always_saved_embedding_ec2_role" {
@@ -152,7 +142,6 @@ resource "aws_iam_role_policy_attachment" "attach_cloudwatch_agent_policy_to_emb
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
-
 # ec2 IAM Policy for Embedding Service
 resource "aws_iam_policy" "always_saved_embedding_ec2_policy" {
   name        = "AlwaysSavedEmbeddingEC2Policy"
@@ -164,18 +153,13 @@ resource "aws_iam_policy" "always_saved_embedding_ec2_policy" {
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject"
-      ],
+      "Action": ["s3:GetObject"],
       "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:ListBucket"
-      ],
-      "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::${var.aws_s3_code_bucket_name}"
     },
     {
       "Effect": "Allow",
@@ -214,12 +198,6 @@ resource "aws_iam_policy" "always_saved_embedding_ec2_policy" {
 EOF
 }
 
-
-
-
-
-
-
 # IAM Instance Profile for Embedding Service
 resource "aws_iam_role_policy_attachment" "attach_embedding_ec2_policy" {
   role       = aws_iam_role.always_saved_embedding_ec2_role.name
@@ -230,4 +208,3 @@ resource "aws_iam_instance_profile" "always_saved_embedding_instance_profile" {
   name = "always-saved-embedding-instance-profile"
   role = aws_iam_role.always_saved_embedding_ec2_role.name
 }
-
