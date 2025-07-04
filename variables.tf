@@ -46,3 +46,14 @@ variable "embedding_instance_type" {
 variable "aws_ecr_embedding_service_url" {
   description = "AWS ECR Url for Embedding Service"
 }
+
+variable "llm_service_instance_type" {
+  description = "AWS Instance Type for LLM Service"
+  type        = string
+}
+
+variable "aws_ecr_llm_service_url" {
+  description = "AWS ECR Url for LLM Service"
+  type        = string
+}
+

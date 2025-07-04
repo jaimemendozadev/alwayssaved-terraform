@@ -46,3 +46,28 @@ resource "aws_instance" "embedding_service" {
 }
 
 
+resource "aws_instance" "llm_service" {
+  ami                         = var.ubuntu_ami_id
+  instance_type               = var.llm_service_instance_type # suggest t3.large
+  subnet_id                   = aws_subnet.public_subnet.id
+  security_groups             = [aws_security_group.always_saved_sg.id]
+  associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.always_saved_llm_instance_profile.name
+  key_name                    = var.aws_pub_key_name
+
+  user_data = templatefile("${path.module}/scripts/llm_service_setup.sh", {
+    ECR_URL = var.aws_ecr_llm_service_url
+  })
+
+  root_block_device {
+    volume_size = 50
+    volume_type = "gp3"
+  }
+
+  tags = {
+    Name = "always-saved-llm-service"
+  }
+}
+
+
+
