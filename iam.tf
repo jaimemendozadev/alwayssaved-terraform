@@ -341,6 +341,19 @@ resource "aws_iam_instance_profile" "always_saved_embedding_instance_profile" {
 #     Version = "2012-10-17"
 #     Statement = [
 #       {
+#         "Effect" : "Allow",
+#         "Action" : [
+#           "s3:GetObject",
+#           "s3:PutObject"
+#         ],
+#         "Resource" : "arn:aws:s3:::${var.aws_s3_code_bucket_name}/*"
+#       },
+#       {
+#         "Effect" : "Allow",
+#         "Action" : ["s3:ListBucket"],
+#         "Resource" : "arn:aws:s3:::${var.aws_s3_code_bucket_name}"
+#       },
+#       {
 #         Effect = "Allow"
 #         Action = [
 #           "ssm:GetParameter",
