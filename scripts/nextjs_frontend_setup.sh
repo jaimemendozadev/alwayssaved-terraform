@@ -60,7 +60,7 @@ MAX_RETRIES=20
 RETRY_DELAY=5
 COUNTER=0
 
-until curl -s --connect-timeout 2 http://${LLM_PRIVATE_IP}:8000/healthz >/dev/null; do
+until curl -s --connect-timeout 2 http://${LLM_PRIVATE_IP}:8000/health >/dev/null; do
   echo "FastAPI not up yet... retrying ($((COUNTER + 1))/$MAX_RETRIES)"
   sleep $RETRY_DELAY
   COUNTER=$((COUNTER + 1))

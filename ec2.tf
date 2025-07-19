@@ -71,7 +71,7 @@ resource "aws_instance" "embedding_service" {
 
 
 # resource "aws_instance" "frontend_service" {
-#   ami                         = var.ubuntu_ami_id          # TODO: Add Next.js AWS Ubuntu AMI ID
+#   ami                         = var.frontend_ami_id
 #   instance_type               = var.frontend_instance_type # TODO: Add Next.js AWS Instance Type
 #   subnet_id                   = aws_subnet.public_subnet.id
 #   security_groups             = [aws_security_group.always_saved_sg.id]
