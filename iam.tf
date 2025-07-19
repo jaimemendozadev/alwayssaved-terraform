@@ -300,3 +300,75 @@ resource "aws_iam_instance_profile" "always_saved_embedding_instance_profile" {
 #   name = "always-saved-llm-instance-profile"
 #   role = aws_iam_role.always_saved_llm_ec2_role.name
 # }
+
+
+
+
+#################################################
+# Next.js Frontend
+#################################################
+
+# resource "aws_iam_role" "always_saved_frontend_ec2_role" {
+#   name = "always-saved-frontend-ec2-role"
+
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [{
+#       Effect = "Allow"
+#       Principal = {
+#         Service = "ec2.amazonaws.com"
+#       }
+#       Action = "sts:AssumeRole"
+#     }]
+#   })
+# }
+
+# resource "aws_iam_role_policy_attachment" "attach_ssm_policy_to_frontend" {
+#   role       = aws_iam_role.always_saved_frontend_ec2_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+# }
+
+# resource "aws_iam_role_policy_attachment" "attach_cloudwatch_to_frontend" {
+#   role       = aws_iam_role.always_saved_frontend_ec2_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+# }
+
+# resource "aws_iam_policy" "always_saved_frontend_ec2_policy" {
+#   name        = "AlwaysSavedFrontendEC2Policy"
+#   description = "Allows frontend EC2 to pull from ECR and read SSM secrets"
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "ssm:GetParameter",
+#           "ssm:GetParameters",
+#           "ssm:GetParametersByPath"
+#         ]
+#         Resource = "*"
+#       },
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "ecr:GetAuthorizationToken",
+#           "ecr:BatchCheckLayerAvailability",
+#           "ecr:GetDownloadUrlForLayer",
+#           "ecr:BatchGetImage"
+#         ]
+#         Resource = "*"
+#       }
+#     ]
+#   })
+# }
+
+# resource "aws_iam_role_policy_attachment" "attach_frontend_custom_policy" {
+#   role       = aws_iam_role.always_saved_frontend_ec2_role.name
+#   policy_arn = aws_iam_policy.always_saved_frontend_ec2_policy.arn
+# }
+
+# resource "aws_iam_instance_profile" "always_saved_frontend_instance_profile" {
+#   name = "always-saved-frontend-instance-profile"
+#   role = aws_iam_role.always_saved_frontend_ec2_role.name
+# }
