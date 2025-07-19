@@ -35,6 +35,16 @@ sleep 10
 # Login to ECR
 aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${ECR_URL}
 
-# Pull and run the container
+# Pull the Docker image
 sudo docker pull ${ECR_URL}
-sudo docker run -d -p 80:3000 --name alwayssaved-frontend ${ECR_URL}
+
+# Run the container with the Clerk Secret
+echo "==== Fetching Clerk Secret from SSM ===="
+CLERK_SECRET_KEY=$(aws ssm get-parameter --name "/alwayssaved/CLERK_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)
+
+echo "==== Running Docker Container with CLERK_SECRET_KEY ===="
+sudo docker run -d \
+  -e CLERK_SECRET_KEY=$CLERK_SECRET_KEY \
+  --name always-saved-frontend \
+  -p 80:3000 \
+  ${ECR_URL}
