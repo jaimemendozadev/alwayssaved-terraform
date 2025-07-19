@@ -57,3 +57,9 @@ variable "aws_ecr_llm_service_url" {
   type        = string
 }
 
+
+variable "frontend_instance_type" {
+  description = "AWS Instance Type for Next.js Frontend"
+  type        = string
+}
+

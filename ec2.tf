@@ -71,15 +71,15 @@ resource "aws_instance" "embedding_service" {
 
 
 # resource "aws_instance" "frontend_service" {
-#   ami                         = var.ubuntu_ami_id
-#   instance_type               = var.frontend_instance_type
+#   ami                         = var.ubuntu_ami_id          # TODO: Add Next.js AWS Ubuntu AMI ID
+#   instance_type               = var.frontend_instance_type # TODO: Add Next.js AWS Instance Type
 #   subnet_id                   = aws_subnet.public_subnet.id
 #   security_groups             = [aws_security_group.always_saved_sg.id]
 #   associate_public_ip_address = true
 #   iam_instance_profile        = aws_iam_instance_profile.always_saved_frontend_instance_profile.name
 #   key_name                    = var.aws_pub_key_name
 
-#   user_data = templatefile("${path.module}/scripts/frontend_service_setup.sh", {
+#   user_data = templatefile("${path.module}/scripts/nextjs_frontend_setup.sh", {
 #     ECR_URL = var.aws_ecr_frontend_service_url
 #   })
 
