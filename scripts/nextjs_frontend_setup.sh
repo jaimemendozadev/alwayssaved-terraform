@@ -28,8 +28,6 @@ curl -fsSL https://get.docker.com | sh
 sudo systemctl enable docker
 sudo systemctl start docker
 sudo usermod -aG docker ubuntu
-
-echo "==== Waiting for Docker Daemon ===="
 sleep 10
 
 echo "==== Authenticating Docker with AWS ECR ===="
@@ -47,13 +45,27 @@ LLM_PRIVATE_IP=$(aws ec2 describe-instances \
 
 echo "Discovered LLM IP: $LLM_PRIVATE_IP"
 
-echo "==== Creating .env.production file ===="
-sudo tee /home/ubuntu/.env.production > /dev/null <<EOF
-NEXT_PUBLIC_BACKEND_BASE_URL=http://${LLM_PRIVATE_IP}:8000
-EOF
+echo "==== Fetching SQS URL from tag ===="
+EXTRACTOR_PUSH_QUEUE_URL=$(aws sqs list-queues \
+  --query "QueueUrls[?contains(@, 'always-saved-extractor-push-queue')]" \
+  --output text \
+  --region us-east-1)
+
+echo "Retrieved EXTRACTOR_PUSH_QUEUE_URL: $EXTRACTOR_PUSH_QUEUE_URL"
+
 
 echo "==== Fetching Clerk Secret from SSM ===="
 CLERK_SECRET_KEY=$(aws ssm get-parameter --name "/alwayssaved/CLERK_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)
+
+echo "Retrieved CLERK_SECRET_KEY: $CLERK_SECRET_KEY"
+
+
+echo "==== Creating .env.production file ===="
+sudo tee /home/ubuntu/.env.production > /dev/null <<EOF
+PRODUCTION_BACKEND_BASE_URL=http://${LLM_PRIVATE_IP}:8000
+CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+EXTRACTOR_PUSH_QUEUE_URL=${EXTRACTOR_PUSH_QUEUE_URL}
+EOF
 
 echo "==== Waiting for FastAPI server at $LLM_PRIVATE_IP:8000 to become available ===="
 MAX_RETRIES=20
@@ -74,7 +86,6 @@ echo "✅ FastAPI is available! Proceeding..."
 
 echo "==== Running Frontend Container ===="
 sudo docker run -d \
-  -e CLERK_SECRET_KEY=$CLERK_SECRET_KEY \
   --env-file /home/ubuntu/.env.production \
   -p 80:3000 \
   --name always-saved-frontend \
