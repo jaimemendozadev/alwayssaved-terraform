@@ -47,8 +47,8 @@ resource "aws_instance" "embedding_service" {
 
 
 # resource "aws_instance" "llm_service" {
-#   ami                         = var.ubuntu_ami_id
-#   instance_type               = var.llm_service_instance_type # suggest t3.large
+#   ami                         = var.llm_service_ami_id
+#   instance_type               = var.llm_service_instance_type
 #   subnet_id                   = aws_subnet.public_subnet.id
 #   security_groups             = [aws_security_group.always_saved_sg.id]
 #   associate_public_ip_address = true
