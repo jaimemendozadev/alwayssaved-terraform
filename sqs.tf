@@ -13,6 +13,10 @@ resource "aws_sqs_queue" "extractor_push_queue" {
     deadLetterTargetArn = aws_sqs_queue.extractor_push_dlq.arn,
     maxReceiveCount     = 5
   })
+
+  tags = {
+    Name = "always-saved-extractor-push-queue"
+  }
 }
 
 resource "aws_sqs_queue" "embedding_push_queue" {
