@@ -371,6 +371,25 @@ resource "aws_iam_policy" "always_saved_frontend_ec2_policy" {
           "ecr:BatchGetImage"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeInstances"
+        ]
+        Resource = "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes"
+        ],
+        "Resource" : [
+          "${aws_sqs_queue.extractor_push_queue.arn}",
+        ]
       }
     ]
   })
