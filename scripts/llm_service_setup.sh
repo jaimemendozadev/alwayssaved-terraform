@@ -30,7 +30,7 @@ sudo usermod -aG docker ubuntu
 echo "==== Docker Auth and App Launch ===="
 aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${ECR_URL}
 sudo docker pull ${ECR_URL}
-sudo docker run -d -p 443:443 --name always-saved-llm ${ECR_URL}
+sudo docker run -d -p 8000:8000 --name always-saved-llm ${ECR_URL}
 
 echo "==== Installing CloudWatch Agent ===="
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
