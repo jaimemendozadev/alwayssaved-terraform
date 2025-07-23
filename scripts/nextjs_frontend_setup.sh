@@ -43,7 +43,7 @@ LLM_PRIVATE_IP=$(aws ec2 describe-instances \
   --output text \
   --region us-east-1)
 
-echo "Discovered LLM IP: $$LLM_PRIVATE_IP"
+echo "Discovered LLM IP: $LLM_PRIVATE_IP"
 
 echo "==== Fetching SQS URL from tag ===="
 EXTRACTOR_PUSH_QUEUE_URL=$(aws sqs list-queues \
@@ -51,7 +51,7 @@ EXTRACTOR_PUSH_QUEUE_URL=$(aws sqs list-queues \
   --output text \
   --region us-east-1)
 
-echo "Retrieved EXTRACTOR_PUSH_QUEUE_URL: $$EXTRACTOR_PUSH_QUEUE_URL"
+echo "Retrieved EXTRACTOR_PUSH_QUEUE_URL: $EXTRACTOR_PUSH_QUEUE_URL"
 
 echo "==== Fetching Clerk Secret from SSM ===="
 CLERK_SECRET_KEY=$(aws ssm get-parameter --name "/alwayssaved/CLERK_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)
@@ -60,9 +60,9 @@ echo "Retrieved CLERK_SECRET_KEY"
 
 echo "==== Creating .env.production file ===="
 sudo tee /home/ubuntu/.env.production > /dev/null <<EOF
-NEXT_PUBLIC_BACKEND_BASE_URL=http://$${LLM_PRIVATE_IP}:8000
-CLERK_SECRET_KEY=$${CLERK_SECRET_KEY}
-EXTRACTOR_PUSH_QUEUE_URL=$${EXTRACTOR_PUSH_QUEUE_URL}
+NEXT_PUBLIC_BACKEND_BASE_URL=http://$LLM_PRIVATE_IP:8000
+CLERK_SECRET_KEY=$CLERK_SECRET_KEY
+EXTRACTOR_PUSH_QUEUE_URL=$EXTRACTOR_PUSH_QUEUE_URL
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_cmVhZHktYWxwYWNhLTgxLmNsZXJrLmFjY291bnRzLmRldiQ
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/signin
@@ -77,16 +77,16 @@ NODE_ENV=production
 QDRANT_COLLECTION_NAME=alwayssaved_user_files
 EOF
 
-echo "==== Waiting for FastAPI server at $$LLM_PRIVATE_IP:8000 to become available ===="
-MAX_RETRIES=20
-RETRY_DELAY=5
+echo "==== Waiting for FastAPI server at $LLM_PRIVATE_IP:8000 to become available ===="
+MAX_RETRIES=100
+RETRY_DELAY=10
 COUNTER=0
 
-until curl -s --connect-timeout 2 http://$$LLM_PRIVATE_IP:8000/health >/dev/null; do
+until curl -s --connect-timeout 2 http://$LLM_PRIVATE_IP:8000/health >/dev/null; do
   echo "FastAPI not up yet... retrying ($((COUNTER + 1))/$MAX_RETRIES)"
   sleep $RETRY_DELAY
   COUNTER=$((COUNTER + 1))
-  if [ $$COUNTER -ge $MAX_RETRIES ]; then
+  if [ $COUNTER -ge $MAX_RETRIES ]; then
     echo "❌ FastAPI did not become available in time. Aborting setup."
     exit 1
   fi
