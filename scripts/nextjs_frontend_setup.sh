@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+# TODO: Have to add CloudWatch logic for telemetry.
+
 echo "==== Logging setup to CloudWatch and EC2 console ===="
 exec > >(tee /var/log/always_saved_frontend_setup.log | logger -t user-data -s 2>/dev/console) 2>&1
 
@@ -36,12 +38,35 @@ aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS
 echo "==== Pulling Frontend Docker Image ===="
 sudo docker pull ${ECR_URL}
 
+echo "==== Waiting for LLM EC2 instance to enter 'running' state ===="
+while true; do
+  LLM_STATE=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=always-saved-llm-service" \
+    --query "Reservations[0].Instances[0].State.Name" \
+    --output text \
+    --region us-east-1)
+
+  echo "LLM instance state: $LLM_STATE"
+
+  if [ "$LLM_STATE" == "running" ]; then
+    break
+  fi
+
+  echo "Waiting for LLM instance to start..."
+  sleep 5
+done
+
 echo "==== Discovering LLM (FastAPI) Private IP from EC2 tag ===="
 LLM_PRIVATE_IP=$(aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=always-saved-llm-service" \
   --query "Reservations[0].Instances[0].PrivateIpAddress" \
   --output text \
   --region us-east-1)
+
+if [ -z "$LLM_PRIVATE_IP" ] || [ "$LLM_PRIVATE_IP" == "None" ]; then
+  echo "❌ Could not retrieve LLM instance private IP. Aborting."
+  exit 1
+fi
 
 echo "Discovered LLM IP: $LLM_PRIVATE_IP"
 
