@@ -56,6 +56,13 @@ resource "aws_security_group" "always_saved_sg" {
 
   }
 
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"] # Allow from within your VPC
+  }
+
   tags = {
     Name = "always-saved-sg"
   }
