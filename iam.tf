@@ -390,6 +390,11 @@ resource "aws_iam_policy" "always_saved_frontend_ec2_policy" {
         "Resource" : [
           "${aws_sqs_queue.extractor_push_queue.arn}",
         ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "sqs:ListQueues",
+        "Resource" : "*"
       }
     ]
   })
