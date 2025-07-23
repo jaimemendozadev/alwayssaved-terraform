@@ -91,6 +91,9 @@ resource "aws_instance" "frontend_service" {
   tags = {
     Name = "always-saved-frontend-service"
   }
+
+  # ✅ Force Terraform to wait until the LLM EC2 is created
+  depends_on = [aws_instance.llm_service]
 }
 
 
