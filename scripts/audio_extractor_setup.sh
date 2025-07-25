@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-
-
 echo "==== Logging all output to file and EC2 console ===="
 exec > >(tee /var/log/always_saved_setup.log | logger -t user-data -s 2>/dev/console) 2>&1
 
