@@ -100,7 +100,7 @@ resource "aws_instance" "frontend_service" {
 # ----------------------
 # 2. ALB and Target Group
 # ----------------------
-resource "aws_lb" "app_alb" {
+resource "aws_lb" "alwayssaved_alb" {
   name               = "alwayssaved-alb"
   internal           = false
   load_balancer_type = "application"
@@ -145,7 +145,7 @@ resource "aws_lb_target_group_attachment" "frontend_attachment" {
 # 3. ALB Listeners (Redirect + HTTPS)
 # ----------------------
 resource "aws_lb_listener" "http_redirect" {
-  load_balancer_arn = aws_lb.app_alb.arn
+  load_balancer_arn = aws_lb.alwayssaved_alb.arn
   port              = 80
   protocol          = "HTTP"
 
@@ -161,7 +161,7 @@ resource "aws_lb_listener" "http_redirect" {
 }
 
 resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.app_alb.arn
+  load_balancer_arn = aws_lb.alwayssaved_alb.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
