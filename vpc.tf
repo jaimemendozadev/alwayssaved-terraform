@@ -20,6 +20,18 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
+resource "aws_subnet" "public_subnet_2" {
+  vpc_id                  = aws_vpc.always_saved_vpc.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "us-east-1b" # Different AZ from the first subnet
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "always-saved-public-subnet-2"
+  }
+}
+
+
 resource "aws_security_group" "always_saved_sg" {
   vpc_id = aws_vpc.always_saved_vpc.id
 
@@ -91,5 +103,10 @@ resource "aws_route_table" "always_saved_rt" {
 
 resource "aws_route_table_association" "always_saved_rta" {
   subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.always_saved_rt.id
+}
+
+resource "aws_route_table_association" "always_saved_rta_2" {
+  subnet_id      = aws_subnet.public_subnet_2.id
   route_table_id = aws_route_table.always_saved_rt.id
 }
