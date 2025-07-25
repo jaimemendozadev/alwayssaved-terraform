@@ -9,7 +9,7 @@ resource "aws_route53_record" "app_alias" {
     evaluate_target_health = true
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 }
