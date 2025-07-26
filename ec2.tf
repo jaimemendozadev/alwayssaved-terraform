@@ -112,6 +112,12 @@ resource "aws_lb" "alwayssaved_alb" {
 
   enable_deletion_protection = false
 
+  access_logs {
+    bucket  = data.aws_s3_bucket.alb_logs.bucket
+    enabled = true
+    prefix  = "alb"
+  }
+
   tags = {
     Name = "alwayssaved-alb"
   }
