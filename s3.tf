@@ -10,27 +10,27 @@ resource "aws_s3_bucket_policy" "alb_logs_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid : "AWSALBLogsPolicy1",
-        Effect : "Allow",
-        Principal : {
-          Service : "logdelivery.elasticloadbalancing.amazonaws.com"
+        Sid = "AWSALBLogsPolicy1",
+        Effect = "Allow",
+        Principal = {
+          Service = "logdelivery.elasticloadbalancing.amazonaws.com"
         },
-        Action : "s3:PutObject",
-        Resource : "${data.aws_s3_bucket.alb_logs.arn}/alb-logs/AWSLogs/*",
-        Condition : {
-          StringEquals : {
-            "s3:x-amz-acl" : "bucket-owner-full-control"
+        Action = "s3:PutObject",
+        Resource = "${data.aws_s3_bucket.alb_logs.arn}/alb/AWSLogs/*",
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
           }
         }
       },
       {
-        Sid : "AWSALBLogsPolicy2",
-        Effect : "Allow",
-        Principal : {
-          Service : "logdelivery.elasticloadbalancing.amazonaws.com"
+        Sid = "AWSALBLogsPolicy2",
+        Effect = "Allow",
+        Principal = {
+          Service = "logdelivery.elasticloadbalancing.amazonaws.com"
         },
-        Action : "s3:GetBucketAcl",
-        Resource : data.aws_s3_bucket.alb_logs.arn
+        Action = "s3:GetBucketAcl",
+        Resource = data.aws_s3_bucket.alb_logs.arn
       }
     ]
   })
