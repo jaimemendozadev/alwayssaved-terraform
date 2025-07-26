@@ -29,3 +29,6 @@ resource "aws_route53_record" "app_alias_www" {
   #   prevent_destroy = true
   # }
 }
+
+
+# TODO: Add Route53 Record for http://alwayssaved.com/ 

@@ -83,21 +83,9 @@ echo "Retrieved CLERK_SECRET_KEY"
 
 echo "==== Creating .env.production file ===="
 sudo tee /home/ubuntu/.env.production > /dev/null <<EOF
-NEXT_PUBLIC_BACKEND_BASE_URL=http://$LLM_PRIVATE_IP:8000
+LLM_BASE_URL=http://$LLM_PRIVATE_IP:8000
 CLERK_SECRET_KEY=$CLERK_SECRET_KEY
 EXTRACTOR_PUSH_QUEUE_URL=$EXTRACTOR_PUSH_QUEUE_URL
-
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_cmVhZHktYWxwYWNhLTgxLmNsZXJrLmFjY291bnRzLmRldiQ
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/signin
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/signup
-NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/signin-check
-NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/onboard
-
-AWS_REGION=us-east-1
-AWS_BUCKET=alwayssaved
-
-NODE_ENV=production
-QDRANT_COLLECTION_NAME=alwayssaved_user_files
 EOF
 
 echo "==== Waiting for FastAPI server at $LLM_PRIVATE_IP:8000 to become available ===="
