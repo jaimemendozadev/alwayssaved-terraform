@@ -31,33 +31,40 @@ resource "aws_subnet" "public_subnet_2" {
   }
 }
 
-
 resource "aws_security_group" "always_saved_sg" {
-  vpc_id = aws_vpc.always_saved_vpc.id
+  name        = "always_saved_sg"
+  description = "Allow internal access from ALB and internal services"
+  vpc_id      = aws_vpc.always_saved_vpc.id
 
-  # Allow inbound SSH from GitHub Actions
+  # Allow SSH for admin access
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # 🔴 Might have to change this later for security
-  }
-
-
-  # Allow inbound HTTP/HTTPS for API
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow SSH (consider restricting in production)"
   }
 
+
+  # ALLOW port 80 ONLY from the ALB
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+    description     = "Allow ALB to reach EC2 on port 80"
   }
+
+  # Optional: Allow LLM ↔ frontend access (8000)
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+    description = "Allow internal app communication on 8000"
+  }
+
+
 
   # Allow all outbound traffic
   egress {
@@ -68,12 +75,6 @@ resource "aws_security_group" "always_saved_sg" {
 
   }
 
-  ingress {
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"] # Allow from within your VPC
-  }
 
   tags = {
     Name = "always-saved-sg"
@@ -87,6 +88,7 @@ resource "aws_internet_gateway" "always_saved_igw" {
     Name = "always-saved-igw"
   }
 }
+
 
 resource "aws_route_table" "always_saved_rt" {
   vpc_id = aws_vpc.always_saved_vpc.id

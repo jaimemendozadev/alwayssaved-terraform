@@ -2,7 +2,7 @@ resource "aws_instance" "audio_extractor" {
   ami                         = var.ubuntu_ami_id
   instance_type               = var.aws_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
-  security_groups             = [aws_security_group.always_saved_sg.id]
+  vpc_security_group_ids      = [aws_security_group.always_saved_sg.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.always_saved_instance_profile.name
   key_name                    = var.aws_pub_key_name
@@ -26,7 +26,7 @@ resource "aws_instance" "embedding_service" {
   ami                         = var.embedding_ami_id
   instance_type               = var.embedding_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
-  security_groups             = [aws_security_group.always_saved_sg.id]
+  vpc_security_group_ids      = [aws_security_group.always_saved_sg.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.always_saved_embedding_instance_profile.name
   key_name                    = var.aws_pub_key_name
@@ -50,7 +50,7 @@ resource "aws_instance" "llm_service" {
   ami                         = var.llm_service_ami_id
   instance_type               = var.llm_service_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
-  security_groups             = [aws_security_group.always_saved_sg.id]
+  vpc_security_group_ids      = [aws_security_group.always_saved_sg.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.always_saved_llm_instance_profile.name
   key_name                    = var.aws_pub_key_name
@@ -74,7 +74,7 @@ resource "aws_instance" "frontend_service" {
   ami                         = var.frontend_ami_id
   instance_type               = var.frontend_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
-  security_groups             = [aws_security_group.always_saved_sg.id]
+  vpc_security_group_ids      = [aws_security_group.always_saved_sg.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.always_saved_frontend_instance_profile.name
   key_name                    = var.aws_pub_key_name
