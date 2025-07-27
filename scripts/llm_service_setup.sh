@@ -32,65 +32,16 @@ aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS
 sudo docker pull ${ECR_URL}
 
 
-echo "==== Waiting for Next.js Frontend EC2 instance to enter 'running' state ===="
-while true; do
-  FRONTEND_STATE=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=always-saved-frontend-service" \
-    --query "Reservations[0].Instances[0].State.Name" \
-    --output text \
-    --region us-east-1)
-
-  echo "Next.js Frontend instance state: $FRONTEND_STATE"
-
-  if [ "$FRONTEND_STATE" == "running" ]; then
-    break
-  fi
-
-  echo "Waiting for Next.js Frontend instance to start..."
-  sleep 5
-done
-
-
-echo "==== Discovering Next.js Frontend Private IP from EC2 tag ===="
-FRONTEND_PRIVATE_IP=$(aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=always-saved-frontend-service" \
-  --query "Reservations[0].Instances[0].PrivateIpAddress" \
-  --output text \
-  --region us-east-1)
-
-if [ -z "$FRONTEND_PRIVATE_IP" ] || [ "$FRONTEND_PRIVATE_IP" == "None" ]; then
-  echo "❌ Could not retrieve Next.js Frontend instance private IP. Aborting."
-  exit 1
-fi
-
-echo "Discovered Next.js Frontend IP: $FRONTEND_PRIVATE_IP"
+# TODO: Need to manually add PRODUCTION_APP_DOMAIN to Parameter Store
+# PRODUCTION_APP_DOMAIN=http://$FRONTEND_PRIVATE_IP
 
 echo "==== Creating .env.production file ===="
 sudo tee /home/ubuntu/.env > /dev/null <<EOF
-PRODUCTION_APP_DOMAIN=http://$FRONTEND_PRIVATE_IP
 PYTHON_MODE=PRODUCTION
 QDRANT_COLLECTION_NAME=alwayssaved_user_files
 LLM_COMPANY=MistralAI
 LLM_MODEL=open-mistral-7b
 EOF
-
-
-echo "==== Waiting for Next.js Frontend app at $FRONTEND_PRIVATE_IP to become available ===="
-MAX_RETRIES=100
-RETRY_DELAY=10
-COUNTER=0
-
-until curl -s --connect-timeout 2 http://$FRONTEND_PRIVATE_IP/health >/dev/null; do
-  echo "Next.js Frontend not up yet... retrying ($((COUNTER + 1))/$MAX_RETRIES)"
-  sleep $RETRY_DELAY
-  COUNTER=$((COUNTER + 1))
-  if [ $COUNTER -ge $MAX_RETRIES ]; then
-    echo "❌ Next.js Frontend did not become available in time. Aborting setup."
-    exit 1
-  fi
-done
-
-echo "✅ Next.js Frontend is available! Proceeding..."
 
 
 echo "==== Running LLM Container ===="
