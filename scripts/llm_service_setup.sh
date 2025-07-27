@@ -47,6 +47,7 @@ EOF
 echo "==== Running LLM Container ===="
 sudo docker run -d -p 8000:8000 \
   --env-file /home/ubuntu/.env \
+  --network="host" \
   --name always-saved-llm ${ECR_URL}
 
 

@@ -65,6 +65,7 @@ echo "==== Running Frontend Container ===="
 sudo docker run -d \
   --env-file /home/ubuntu/.env.production \
   -p 80:3000 \
+  --network="host" \
   --name always-saved-frontend \
   ${ECR_URL}
 
