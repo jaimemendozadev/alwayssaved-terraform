@@ -110,3 +110,42 @@ resource "aws_route_table_association" "always_saved_rta_2" {
   subnet_id      = aws_subnet.public_subnet_2.id
   route_table_id = aws_route_table.always_saved_rt.id
 }
+
+
+
+##############################################
+# ALB Security Group
+##############################################
+resource "aws_security_group" "alb_sg" {
+  name        = "always-saved-alb-sg"
+  description = "Allow HTTP/HTTPS from the internet"
+  vpc_id      = aws_vpc.always_saved_vpc.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP traffic from anywhere"
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS traffic from anywhere"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
+  }
+
+  tags = {
+    Name = "always-saved-alb-sg"
+  }
+}
