@@ -36,37 +36,6 @@ aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS
 echo "==== Pulling Frontend Docker Image ===="
 sudo docker pull ${ECR_URL}
 
-echo "==== Waiting for LLM EC2 instance to enter 'running' state ===="
-while true; do
-  LLM_STATE=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=always-saved-llm-service" \
-    --query "Reservations[0].Instances[0].State.Name" \
-    --output text \
-    --region us-east-1)
-
-  echo "LLM instance state: $LLM_STATE"
-
-  if [ "$LLM_STATE" == "running" ]; then
-    break
-  fi
-
-  echo "Waiting for LLM instance to start..."
-  sleep 5
-done
-
-echo "==== Discovering LLM (FastAPI) Private IP from EC2 tag ===="
-LLM_PRIVATE_IP=$(aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=always-saved-llm-service" \
-  --query "Reservations[0].Instances[0].PrivateIpAddress" \
-  --output text \
-  --region us-east-1)
-
-if [ -z "$LLM_PRIVATE_IP" ] || [ "$LLM_PRIVATE_IP" == "None" ]; then
-  echo "❌ Could not retrieve LLM instance private IP. Aborting."
-  exit 1
-fi
-
-echo "Discovered LLM IP: $LLM_PRIVATE_IP"
 
 echo "==== Fetching SQS URL from tag ===="
 EXTRACTOR_PUSH_QUEUE_URL=$(aws sqs list-queues \
@@ -81,29 +50,16 @@ CLERK_SECRET_KEY=$(aws ssm get-parameter --name "/alwayssaved/CLERK_SECRET_KEY" 
 
 echo "Retrieved CLERK_SECRET_KEY"
 
+# TODO: Need to manually add LLM_BASE_URL to Parameter Store
+# LLM_BASE_URL=http://$LLM_PRIVATE_IP:8000
+
 echo "==== Creating .env.production file ===="
 sudo tee /home/ubuntu/.env.production > /dev/null <<EOF
-LLM_BASE_URL=http://$LLM_PRIVATE_IP:8000
 CLERK_SECRET_KEY=$CLERK_SECRET_KEY
 EXTRACTOR_PUSH_QUEUE_URL=$EXTRACTOR_PUSH_QUEUE_URL
 EOF
 
-echo "==== Waiting for FastAPI server at $LLM_PRIVATE_IP:8000 to become available ===="
-MAX_RETRIES=100
-RETRY_DELAY=10
-COUNTER=0
 
-until curl -s --connect-timeout 2 http://$LLM_PRIVATE_IP:8000/health >/dev/null; do
-  echo "FastAPI not up yet... retrying ($((COUNTER + 1))/$MAX_RETRIES)"
-  sleep $RETRY_DELAY
-  COUNTER=$((COUNTER + 1))
-  if [ $COUNTER -ge $MAX_RETRIES ]; then
-    echo "❌ FastAPI did not become available in time. Aborting setup."
-    exit 1
-  fi
-done
-
-echo "✅ FastAPI is available! Proceeding..."
 
 echo "==== Running Frontend Container ===="
 sudo docker run -d \
