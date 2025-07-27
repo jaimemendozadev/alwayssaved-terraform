@@ -283,6 +283,13 @@ resource "aws_iam_policy" "always_saved_llm_ec2_policy" {
         "logs:CreateLogGroup"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*"
     }
   ]
 }
