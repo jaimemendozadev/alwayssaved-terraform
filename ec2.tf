@@ -134,7 +134,7 @@ resource "aws_lb_target_group" "frontend" {
   vpc_id   = aws_vpc.always_saved_vpc.id
 
   health_check {
-    path                = "/health"
+    path                = "/api/health"
     protocol            = "HTTP"
     matcher             = "200"
     interval            = 30
