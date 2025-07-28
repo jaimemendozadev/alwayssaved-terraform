@@ -210,3 +210,44 @@ resource "aws_security_group" "llm_alb_sg" {
   }
 }
 
+
+
+##############################################
+# LLM ec2 Security Group
+##############################################
+
+resource "aws_security_group" "llm_ec2_sg" {
+  name        = "always-saved-llm-ec2-sg"
+  description = "Allow HTTPS (port 8000) from the LLM ALB to the LLM EC2"
+  vpc_id      = aws_vpc.always_saved_vpc.id
+
+  # Allow inbound from the LLM ALB on port 8000
+  ingress {
+    from_port       = 8000
+    to_port         = 8000
+    protocol        = "tcp"
+    security_groups = [aws_security_group.llm_alb_sg.id] # You'll define this if not already
+    description     = "Allow LLM ALB to reach LLM EC2 on port 8000"
+  }
+
+  # Allow SSH (optional — for debugging)
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow SSH access for admin"
+  }
+
+  # Outbound: allow all
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "always-saved-llm-ec2-sg"
+  }
+}
