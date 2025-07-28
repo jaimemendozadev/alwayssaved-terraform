@@ -31,4 +31,18 @@ resource "aws_route53_record" "app_alias_www" {
 }
 
 
+resource "aws_route53_record" "llm_alias" {
+  zone_id = var.route53_zone_id
+  name    = "llm.alwayssaved.com"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.llm_alb.dns_name
+    zone_id                = aws_lb.llm_alb.zone_id
+    evaluate_target_health = true
+  }
+}
+
+
+
 # TODO: Add Route53 Record for http://alwayssaved.com/ 
