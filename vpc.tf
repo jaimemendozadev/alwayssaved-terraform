@@ -95,6 +95,15 @@ resource "aws_security_group" "internal_sg" {
     description = "Internal app communication on port 8000"
   }
 
+  # Inbound from ALB on port 8000
+  ingress {
+    from_port       = 8000
+    to_port         = 8000
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+    description     = "Allow ALB to reach LLM on port 8000"
+  }
+
   # Inbound on port 3000 (if needed)
   ingress {
     from_port   = 3000
