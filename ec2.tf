@@ -188,3 +188,68 @@ resource "aws_lb_listener" "https" {
     target_group_arn = aws_lb_target_group.frontend.arn
   }
 }
+
+
+
+
+
+# ----------------------------
+# LLM ALB and Target Group
+# ----------------------------
+
+resource "aws_lb" "llm_alb" {
+  name               = "alwayssaved-llm-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id] # reuse existing SG
+  subnets            = [aws_subnet.public_subnet.id, aws_subnet.public_subnet_2.id]
+
+  tags = {
+    Name = "alwayssaved-llm-alb"
+  }
+}
+
+resource "aws_lb_target_group" "llm_external" {
+  name     = "llm-external-tg"
+  port     = 8000
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.always_saved_vpc.id
+
+  health_check {
+    path                = "/health"
+    protocol            = "HTTP"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+
+  tags = {
+    Name = "llm-external-tg"
+  }
+}
+
+resource "aws_lb_target_group_attachment" "llm_external_attachment" {
+  target_group_arn = aws_lb_target_group.llm_external.arn
+  target_id        = aws_instance.llm_service.id
+  port             = 8000
+}
+
+
+# ----------------------
+# LLM ALB Listeners
+# ----------------------
+
+resource "aws_lb_listener" "llm_https" {
+  load_balancer_arn = aws_lb.llm_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.frontend_ssl_cert.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.llm_external.arn
+  }
+}
