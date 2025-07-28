@@ -155,32 +155,6 @@ resource "aws_lb_target_group_attachment" "frontend_attachment" {
 }
 
 
-resource "aws_lb_target_group" "llm" {
-  name     = "llm-tg"
-  port     = 8000
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.always_saved_vpc.id
-
-  health_check {
-    path                = "/health"
-    protocol            = "HTTP"
-    matcher             = "200"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
-
-  tags = {
-    Name = "llm-tg"
-  }
-}
-
-resource "aws_lb_target_group_attachment" "llm_attachment" {
-  target_group_arn = aws_lb_target_group.llm.arn
-  target_id        = aws_instance.llm_service.id
-  port             = 8000
-}
 
 
 # ----------------------
@@ -214,21 +188,3 @@ resource "aws_lb_listener" "https" {
     target_group_arn = aws_lb_target_group.frontend.arn
   }
 }
-
-
-resource "aws_lb_listener_rule" "llm_path_proxy" {
-  listener_arn = aws_lb_listener.https.arn
-  priority = 10
-  action  {
-    type = "forward"
-    target_group_arn = aws_lb_target_group.llm.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/api/llm/*"]
-    }
-  }
-
-}
-

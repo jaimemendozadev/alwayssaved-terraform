@@ -86,31 +86,13 @@ resource "aws_security_group" "internal_sg" {
   description = "Allow EC2 instances to talk to each other"
   vpc_id      = aws_vpc.always_saved_vpc.id
 
-  # Inbound from other instances in this SG on port 8000
+  # Allow all members of this SG to reach each other on 8000
   ingress {
     from_port   = 8000
     to_port     = 8000
     protocol    = "tcp"
     self        = true
-    description = "Internal app communication on port 8000"
-  }
-
-  # Inbound from ALB on port 8000
-  ingress {
-    from_port       = 8000
-    to_port         = 8000
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
-    description     = "Allow ALB to reach LLM on port 8000"
-  }
-
-  # Inbound on port 3000 (if needed)
-  ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    self        = true
-    description = "Internal app communication on port 3000"
+    description = "Frontend EC2 can talk to LLM EC2 on port 8000"
   }
 
   egress {
