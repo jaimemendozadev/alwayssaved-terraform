@@ -201,7 +201,7 @@ resource "aws_lb" "llm_alb" {
   name               = "alwayssaved-llm-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb_sg.id] # reuse existing SG
+  security_groups    = [aws_security_group.llm_alb_sg.id] # Use new llm_alb_sg
   subnets            = [aws_subnet.public_subnet.id, aws_subnet.public_subnet_2.id]
 
   tags = {

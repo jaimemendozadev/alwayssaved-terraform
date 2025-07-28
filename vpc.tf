@@ -178,3 +178,35 @@ resource "aws_security_group" "alb_sg" {
     Name = "always-saved-alb-sg"
   }
 }
+
+##############################################
+# LLM ALB Security Group
+##############################################
+
+
+resource "aws_security_group" "llm_alb_sg" {
+  name        = "always-saved-llm-alb-sg"
+  description = "Allow HTTPS traffic to LLM ALB"
+  vpc_id      = aws_vpc.always_saved_vpc.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS traffic from anywhere"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
+  }
+
+  tags = {
+    Name = "always-saved-llm-alb-sg"
+  }
+}
+
