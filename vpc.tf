@@ -226,7 +226,7 @@ resource "aws_security_group" "llm_ec2_sg" {
     from_port       = 8000
     to_port         = 8000
     protocol        = "tcp"
-    security_groups = [aws_security_group.llm_alb_sg.id] # You'll define this if not already
+    security_groups = [aws_security_group.llm_alb_sg.id]
     description     = "Allow LLM ALB to reach LLM EC2 on port 8000"
   }
 

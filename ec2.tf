@@ -21,7 +21,6 @@ resource "aws_instance" "audio_extractor" {
   }
 }
 
-# TODO: Embedding ec2 Instance will need its own security group
 resource "aws_instance" "embedding_service" {
   ami                         = var.embedding_ami_id
   instance_type               = var.embedding_instance_type

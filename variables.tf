@@ -118,10 +118,6 @@ variable "aws_ecr_frontend_service_url" {
 ##############################################
 
 
-
-
-
-
 variable "route53_zone_id" {
   description = "alwayssaved Zone ID in Route53"
   type        = string

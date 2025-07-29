@@ -6,10 +6,6 @@ resource "aws_acm_certificate" "frontend_ssl_cert" {
     "www.alwayssaved.com"
   ]
 
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
-
   tags = {
     Name = "alwayssaved-frontend-ssl-cert"
   }
@@ -31,9 +27,6 @@ resource "aws_route53_record" "cert_dns_validation" {
   records = [each.value.record]
   ttl     = 300
 
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
 }
 
 resource "aws_acm_certificate_validation" "cert_validation_complete" {

@@ -8,10 +8,6 @@ resource "aws_route53_record" "app_alias" {
     zone_id                = aws_lb.alwayssaved_alb.zone_id
     evaluate_target_health = true
   }
-
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
 }
 
 resource "aws_route53_record" "app_alias_www" {
@@ -24,10 +20,6 @@ resource "aws_route53_record" "app_alias_www" {
     zone_id                = aws_lb.alwayssaved_alb.zone_id
     evaluate_target_health = true
   }
-
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
 }
 
 
@@ -42,7 +34,3 @@ resource "aws_route53_record" "llm_alias" {
     evaluate_target_health = true
   }
 }
-
-
-
-# TODO: Add Route53 Record for http://alwayssaved.com/ 
