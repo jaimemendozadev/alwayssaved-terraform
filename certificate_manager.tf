@@ -3,8 +3,7 @@ resource "aws_acm_certificate" "frontend_ssl_cert" {
   validation_method = "DNS"
 
   subject_alternative_names = [
-    "www.alwayssaved.com",
-    "llm.alwayssaved.com"
+    "www.alwayssaved.com"
   ]
 
   # lifecycle {
