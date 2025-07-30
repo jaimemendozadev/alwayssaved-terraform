@@ -50,9 +50,6 @@ CLERK_SECRET_KEY=$(aws ssm get-parameter --name "/alwayssaved/CLERK_SECRET_KEY" 
 
 echo "Retrieved CLERK_SECRET_KEY"
 
-# TODO: Need to manually add LLM_BASE_URL to Parameter Store
-# LLM_BASE_URL=http://$LLM_PRIVATE_IP:8000
-
 echo "==== Creating .env.production file ===="
 sudo tee /home/ubuntu/.env.production > /dev/null <<EOF
 CLERK_SECRET_KEY=$CLERK_SECRET_KEY

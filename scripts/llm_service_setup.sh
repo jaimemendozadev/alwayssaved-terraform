@@ -32,9 +32,6 @@ aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS
 sudo docker pull ${ECR_URL}
 
 
-# TODO: Need to manually add PRODUCTION_APP_DOMAIN to Parameter Store
-# PRODUCTION_APP_DOMAIN=http://$FRONTEND_PRIVATE_IP
-
 echo "==== Creating .env.production file ===="
 sudo tee /home/ubuntu/.env > /dev/null <<EOF
 PYTHON_MODE=PRODUCTION

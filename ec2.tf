@@ -96,9 +96,9 @@ resource "aws_instance" "frontend_service" {
 }
 
 
-# ----------------------
+# ------------------------
 # 2. ALB and Target Group
-# ----------------------
+# ------------------------
 resource "aws_lb" "alwayssaved_alb" {
   name               = "alwayssaved-alb"
   internal           = false
@@ -156,9 +156,9 @@ resource "aws_lb_target_group_attachment" "frontend_attachment" {
 
 
 
-# ----------------------
+# -----------------------------------
 # 3. ALB Listeners (Redirect + HTTPS)
-# ----------------------
+# -----------------------------------
 resource "aws_lb_listener" "http_redirect" {
   load_balancer_arn = aws_lb.alwayssaved_alb.arn
   port              = 80
@@ -200,7 +200,7 @@ resource "aws_lb" "llm_alb" {
   name               = "alwayssaved-llm-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.llm_alb_sg.id] # Use new llm_alb_sg
+  security_groups    = [aws_security_group.llm_alb_sg.id]
   subnets            = [aws_subnet.public_subnet.id, aws_subnet.public_subnet_2.id]
 
   tags = {
