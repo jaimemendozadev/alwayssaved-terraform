@@ -38,6 +38,8 @@ PYTHON_MODE=PRODUCTION
 QDRANT_COLLECTION_NAME=alwayssaved_user_files
 LLM_COMPANY=MistralAI
 LLM_MODEL=open-mistral-7b
+EMBEDDING_MODEL=multi-qa-MiniLM-L6-cos-v1
+AWS_REGION=us-east-1
 EOF
 
 
