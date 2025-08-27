@@ -1,3 +1,8 @@
+############################################
+# VPC
+############################################
+
+
 resource "aws_vpc" "always_saved_vpc" {
   cidr_block           = "10.0.0.0/16" # Defines the private IP range (can hold up to ~65,000 IPs).
   enable_dns_support   = true          # Allows instances in this VPC to resolve DNS hostnames.
@@ -7,6 +12,34 @@ resource "aws_vpc" "always_saved_vpc" {
     Name = "always-saved-vpc"
   }
 }
+
+
+############################################
+
+
+
+
+
+############################################
+# Internet Gateway
+############################################
+
+resource "aws_internet_gateway" "always_saved_igw" {
+  vpc_id = aws_vpc.always_saved_vpc.id
+
+  tags = {
+    Name = "always-saved-igw"
+  }
+}
+
+
+############################################
+
+
+
+############################################
+# Public Subnets
+############################################
 
 
 resource "aws_subnet" "public_subnet" {
@@ -30,6 +63,41 @@ resource "aws_subnet" "public_subnet_2" {
     Name = "always-saved-public-subnet-2"
   }
 }
+
+
+############################################
+# Route Tables
+############################################
+
+resource "aws_route_table" "always_saved_rt" {
+  vpc_id = aws_vpc.always_saved_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.always_saved_igw.id
+  }
+
+  tags = {
+    Name = "always-saved-route-table"
+  }
+}
+
+resource "aws_route_table_association" "always_saved_rta" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.always_saved_rt.id
+}
+
+resource "aws_route_table_association" "always_saved_rta_2" {
+  subnet_id      = aws_subnet.public_subnet_2.id
+  route_table_id = aws_route_table.always_saved_rt.id
+}
+
+
+############################################
+
+
+
+
 
 resource "aws_security_group" "always_saved_sg" {
   name        = "always_saved_sg"
@@ -81,6 +149,8 @@ resource "aws_security_group" "always_saved_sg" {
   }
 }
 
+
+
 resource "aws_security_group" "internal_sg" {
   name        = "always-saved-internal-sg"
   description = "Allow EC2 instances to talk to each other"
@@ -108,37 +178,9 @@ resource "aws_security_group" "internal_sg" {
 }
 
 
-resource "aws_internet_gateway" "always_saved_igw" {
-  vpc_id = aws_vpc.always_saved_vpc.id
-
-  tags = {
-    Name = "always-saved-igw"
-  }
-}
 
 
-resource "aws_route_table" "always_saved_rt" {
-  vpc_id = aws_vpc.always_saved_vpc.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.always_saved_igw.id
-  }
-
-  tags = {
-    Name = "always-saved-route-table"
-  }
-}
-
-resource "aws_route_table_association" "always_saved_rta" {
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.always_saved_rt.id
-}
-
-resource "aws_route_table_association" "always_saved_rta_2" {
-  subnet_id      = aws_subnet.public_subnet_2.id
-  route_table_id = aws_route_table.always_saved_rt.id
-}
 
 
 
