@@ -27,8 +27,7 @@ resource "aws_lb" "alwayssaved_alb" {
 
 
 
-
-resource "aws_lb_target_group" "frontend" {
+resource "aws_lb_target_group" "frontend_target_group" {
   name     = "frontend-tg"
   port     = 80
   protocol = "HTTP"
@@ -50,7 +49,7 @@ resource "aws_lb_target_group" "frontend" {
 }
 
 resource "aws_lb_target_group_attachment" "frontend_attachment" {
-  target_group_arn = aws_lb_target_group.frontend.arn
+  target_group_arn = aws_lb_target_group.frontend_target_group.arn
   target_id        = aws_instance.frontend_app.id
   port             = 80
 }
@@ -85,7 +84,7 @@ resource "aws_lb_listener" "https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.frontend.arn
+    target_group_arn = aws_lb_target_group.frontend_target_group.arn
   }
 }
 
