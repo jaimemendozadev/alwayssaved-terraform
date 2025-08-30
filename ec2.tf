@@ -10,7 +10,7 @@ resource "aws_instance" "extractor_service" {
   iam_instance_profile        = aws_iam_instance_profile.always_saved_instance_profile.name
   key_name                    = var.aws_pub_key_name
 
-  user_data = templatefile("${path.module}/scripts/audio_extractor_setup.sh", {
+  user_data = templatefile("${path.module}/scripts/extractor_service_setup.sh", {
     ECR_URL = var.aws_ecr_extractor_service_url
   })
 
@@ -92,7 +92,7 @@ resource "aws_instance" "frontend_app" {
   iam_instance_profile        = aws_iam_instance_profile.always_saved_frontend_instance_profile.name
   key_name                    = var.aws_pub_key_name
 
-  user_data = templatefile("${path.module}/scripts/nextjs_frontend_setup.sh", {
+  user_data = templatefile("${path.module}/scripts/frontend_app_setup.sh", {
     ECR_URL = var.aws_ecr_frontend_app_url
   })
 
