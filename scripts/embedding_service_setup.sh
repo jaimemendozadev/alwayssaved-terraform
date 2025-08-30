@@ -37,16 +37,6 @@ sudo systemctl enable docker
 sudo systemctl start docker
 sudo usermod -aG docker ubuntu
 
-# echo "==== Installing NVIDIA Container Toolkit ===="
-# distribution=$(. /etc/os-release; echo $ID$VERSION_ID)
-# curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
-# curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-# sudo apt-get update
-# sudo apt-get install -o Dpkg::Options::="--force-confold" -y nvidia-docker2
-# sudo systemctl restart docker
-
-# echo "==== Waiting for Docker Daemon and NVIDIA Toolkit to Settle ===="
-# sleep 10
 
 echo "==== Waiting for Docker Daemon to Settle ===="
 sleep 10
@@ -54,9 +44,6 @@ sleep 10
 echo "==== Authenticating Docker with AWS ECR ===="
 aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${ECR_URL}
 
-# echo "==== Pulling and Running AlwaysSaved Embedding Container (with GPU) ===="
-# sudo docker pull ${ECR_URL}
-# sudo docker run --gpus all -d --name always-saved-extractor ${ECR_URL}
 
 echo "==== Pulling and Running AlwaysSaved Embedding Container ===="
 sudo docker pull ${ECR_URL}

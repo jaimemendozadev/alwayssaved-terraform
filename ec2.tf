@@ -26,6 +26,10 @@ resource "aws_instance" "extractor_service" {
   }
 }
 
+
+############################################
+# Embedding Service
+############################################
 resource "aws_instance" "embedding_service" {
   ami                         = var.embedding_ami_id
   instance_type               = var.embedding_instance_type
