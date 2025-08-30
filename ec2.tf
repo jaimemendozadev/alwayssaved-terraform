@@ -81,7 +81,11 @@ resource "aws_instance" "llm_service" {
 }
 
 
-resource "aws_instance" "frontend_service" {
+############################################
+# Frontend App
+############################################
+
+resource "aws_instance" "frontend_app" {
   ami                         = var.frontend_ami_id
   instance_type               = var.frontend_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
@@ -91,7 +95,7 @@ resource "aws_instance" "frontend_service" {
   key_name                    = var.aws_pub_key_name
 
   user_data = templatefile("${path.module}/scripts/nextjs_frontend_setup.sh", {
-    ECR_URL = var.aws_ecr_frontend_service_url
+    ECR_URL = var.aws_ecr_frontend_app_url
   })
 
   root_block_device {
@@ -106,6 +110,8 @@ resource "aws_instance" "frontend_service" {
   # ✅ Force Terraform to wait until the LLM EC2 is created
   depends_on = [aws_instance.llm_service]
 }
+
+
 
 
 # ------------------------
@@ -161,7 +167,7 @@ resource "aws_lb_target_group" "frontend" {
 
 resource "aws_lb_target_group_attachment" "frontend_attachment" {
   target_group_arn = aws_lb_target_group.frontend.arn
-  target_id        = aws_instance.frontend_service.id
+  target_id        = aws_instance.frontend_app.id
   port             = 80
 }
 

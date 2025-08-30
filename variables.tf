@@ -110,7 +110,7 @@ variable "frontend_instance_type" {
   type        = string
 }
 
-variable "aws_ecr_frontend_service_url" {
+variable "aws_ecr_frontend_app_url" {
   description = "AWS ECR Url for Next.js Frontend"
   type        = string
 }
