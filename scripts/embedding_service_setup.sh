@@ -80,4 +80,4 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
   -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
   -s
 
-echo "==== Deployment Complete ===="
+echo "==== ✅  Embedding Service Ready ===="

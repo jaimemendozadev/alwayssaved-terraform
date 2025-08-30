@@ -54,6 +54,9 @@ resource "aws_instance" "embedding_service" {
 }
 
 
+############################################
+# LLM Service
+############################################
 resource "aws_instance" "llm_service" {
   ami                         = var.llm_service_ami_id
   instance_type               = var.llm_service_instance_type
