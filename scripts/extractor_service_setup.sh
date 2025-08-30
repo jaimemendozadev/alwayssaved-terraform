@@ -58,7 +58,7 @@ sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /de
         "collect_list": [
           {
             "file_path": "/var/lib/docker/containers/*/*.log",
-            "log_group_name": "/alwayssaved/transcriber",
+            "log_group_name": "/alwayssaved/extractor",
             "log_stream_name": "{instance_id}",
             "retention_in_days": 14
           }

@@ -1,4 +1,9 @@
-resource "aws_instance" "audio_extractor" {
+############################################
+# Extractor Service
+############################################
+
+
+resource "aws_instance" "extractor_service" {
   ami                         = var.ubuntu_ami_id
   instance_type               = var.aws_instance_type
   subnet_id                   = aws_subnet.public_subnet.id
