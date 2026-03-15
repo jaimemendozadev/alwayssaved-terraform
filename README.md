@@ -33,6 +33,23 @@ $ terraform plan -var-file="terraform.tfvars"
 $ terraform apply -var-file="terraform.tfvars" -auto-approve
 ```
 
+<b>IMPORTANT</b>: You need to wait until Terraform finishes deploying all the infrastructure on AWS.  Once the infrastructure has been spun up, look for the following AWS SQS URLs at the bottom of the terminal output:
+
+```
+embedding_push_queue_url = "https://sqs.us-east-1.amazonaws.com/<number-id>/always-saved-embedding-push-queue"
+extractor_push_queue_url = "https://sqs.us-east-1.amazonaws.com/<number-id>/always-saved-extractor-push-queue"
+```
+
+You will need to update the following parameters in the AWS Systems Manager Parameter Store in order for the act to work:
+
+```
+/alwayssaved/EMBEDDING_PUSH_QUEUE_URL
+
+/alwayssaved/EXTRACTOR_PUSH_QUEUE_URL
+```
+
+<br />
+
 To tear down the Infra, enter the following command in your terminal:
 
 ```
