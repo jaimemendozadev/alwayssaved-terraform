@@ -7,10 +7,42 @@ This is the repository for the entire AWS Infra managed by Terraform.
 ---
 
 ## Table of Contents (TOC)
+- [Running the Infra](#running-the-infra)
 - [File Structure](#file-structure)
 - [AlwaysSaved System Design / App Flow](#alwayssaved-system-design--app-flow)
 
 ---
+
+---
+## Running the Infra
+
+
+
+To run the Infra on AWS, first initialize Terraform in your terminal:
+
+```
+$ terraform init
+```
+
+
+Then enter the following commands in your terminal:
+
+```
+$ terraform plan -var-file="terraform.tfvars"
+
+$ terraform apply -var-file="terraform.tfvars" -auto-approve
+```
+
+To tear down the Infra, enter the following command in your terminal:
+
+```
+$ terraform destroy -auto-approve
+```
+
+<br />
+
+
+[Back to TOC](#table-of-contents-toc)
 
 ---
 ## File Structure
@@ -65,8 +97,6 @@ We install Docker in each service's running ec2 instance as well as the CloudWat
 
 
 [Back to TOC](#table-of-contents-toc)
-
----
 
 ---
 
