@@ -2,38 +2,27 @@
 # SES Domain Identity (Sending: alwayssaved.com)
 #################################################
 
-# This resource is IMPORTED, not created fresh — the identity already
-# exists in AWS (currently "Unverified") because it was made manually
-# in the console. Run this BEFORE terraform apply:
+#################################################
+# SES Domain Identity (Sending: alwayssaved.com)
+#################################################
+
+# This resource was originally IMPORTED rather than created fresh, since
+# the identity already existed in AWS (manually created in the console,
+# previously stuck "Unverified") before this file existed. If you ever
+# need to import it again on a fresh machine/state file:
 #
 #   terraform import aws_ses_domain_identity.alwayssaved alwayssaved.com
 #
-# ---------------------------------------------------------------------
-# READ ME IF "terraform destroy" EVER FAILS ON THIS RESOURCE:
-#
-# prevent_destroy below is intentional, not a bug. SES domain
-# verification takes several minutes to re-propagate through DNS every
-# time it's torn down and recreated. Since this project gets destroyed
-# and rebuilt often during dev, this flag stops THIS resource (and only
-# this one) from being wiped out along with the EC2/SQS/ALB stuff.
-#
-# If you actually want to delete this for good (e.g. retiring the
-# domain, or migrating SES to a different AWS account):
-#   1. Remove the `lifecycle { prevent_destroy = true }` block below
-#   2. Run `terraform apply` once (no infra changes, just updates state
-#      to drop the protection)
-#   3. THEN `terraform destroy` will be able to remove it
-#
-# Until you do that, `terraform destroy` will error out specifically on
-# this resource and stop — that's the safety working as intended, not
-# something broken. No other resources are affected by that error.
-# ---------------------------------------------------------------------
+# NOTE: this resource is destroyed along with everything else on
+# `terraform destroy` — there is no prevent_destroy protection here on
+# purpose, to keep the destroy/rebuild workflow simple (destroy really
+# means destroy, no exceptions to remember). The tradeoff: every full
+# destroy + apply cycle re-triggers SES domain verification, which
+# takes a few minutes to re-propagate through DNS before status flips
+# back to "Verified". That's expected, not a bug — just wait it out
+# after rebuilding before trying to send mail.
 resource "aws_ses_domain_identity" "alwayssaved" {
   domain = "alwayssaved.com"
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 #################################################
