@@ -56,25 +56,6 @@ $ terraform destroy -auto-approve
 ```
 
 <br />
-<br />
-
-**NOTE on `terraform destroy` and SES**:
-
-The SES domain identity for
-alwayssaved.com (`aws_ses_domain_identity.alwayssaved` in `ses.tf`) is
-protected with `lifecycle { prevent_destroy = true }`. This is
-intentional — SES domain verification takes several minutes to
-re-propagate every time it's recreated, and this project gets
-destroyed/rebuilt often during dev. `terraform destroy` will run
-normally for everything else and only error out on this one resource.
-
-To actually remove it (e.g. retiring the domain or migrating accounts):
-
-1. Delete the `lifecycle` block in `ses.tf`
-2. `terraform apply` (no infra changes — just updates state)
-3. `terraform destroy` will now succeed on it too
-
-<br />
 
 [Back to TOC](#table-of-contents-toc)
 
