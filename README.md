@@ -7,6 +7,7 @@ This is the repository for the entire AWS Infra managed by Terraform.
 ---
 
 ## Table of Contents (TOC)
+
 - [Running the Infra](#running-the-infra)
 - [File Structure](#file-structure)
 - [AlwaysSaved System Design / App Flow](#alwayssaved-system-design--app-flow)
@@ -14,16 +15,14 @@ This is the repository for the entire AWS Infra managed by Terraform.
 ---
 
 ---
+
 ## Running the Infra
-
-
 
 To run the Infra on AWS, first initialize Terraform in your terminal:
 
 ```
 $ terraform init
 ```
-
 
 Then enter the following commands in your terminal:
 
@@ -33,7 +32,7 @@ $ terraform plan -var-file="terraform.tfvars"
 $ terraform apply -var-file="terraform.tfvars" -auto-approve
 ```
 
-<b>IMPORTANT</b>: You need to wait until Terraform finishes deploying all the infrastructure on AWS.  Once the infrastructure has been spun up, look for the following AWS SQS URLs at the bottom of the terminal output:
+<b>IMPORTANT</b>: You need to wait until Terraform finishes deploying all the infrastructure on AWS. Once the infrastructure has been spun up, look for the following AWS SQS URLs at the bottom of the terminal output:
 
 ```
 embedding_push_queue_url = "https://sqs.us-east-1.amazonaws.com/<number-id>/always-saved-embedding-push-queue"
@@ -57,11 +56,30 @@ $ terraform destroy -auto-approve
 ```
 
 <br />
+<br />
 
+**NOTE on `terraform destroy` and SES**:
+
+The SES domain identity for
+alwayssaved.com (`aws_ses_domain_identity.alwayssaved` in `ses.tf`) is
+protected with `lifecycle { prevent_destroy = true }`. This is
+intentional — SES domain verification takes several minutes to
+re-propagate every time it's recreated, and this project gets
+destroyed/rebuilt often during dev. `terraform destroy` will run
+normally for everything else and only error out on this one resource.
+
+To actually remove it (e.g. retiring the domain or migrating accounts):
+
+1. Delete the `lifecycle` block in `ses.tf`
+2. `terraform apply` (no infra changes — just updates state)
+3. `terraform destroy` will now succeed on it too
+
+<br />
 
 [Back to TOC](#table-of-contents-toc)
 
 ---
+
 ## File Structure
 
 ```
@@ -79,26 +97,26 @@ $ terraform destroy -auto-approve
 |
 |
 |__alb.tf
-|    
-|__certificate_manager.tf    
-|    
-|__ec2.tf    
-|    
-|__iam.tf    
-|    
-|__providers.tf    
-|    
-|__route53.tf    
-|    
-|__s3.tf   
-|    
-|__sg.tf    
-|    
-|__sqs.tf    
-|      
-|__variables.tf     
-|     
-|__vpc.tf   
+|
+|__certificate_manager.tf
+|
+|__ec2.tf
+|
+|__iam.tf
+|
+|__providers.tf
+|
+|__route53.tf
+|
+|__s3.tf
+|
+|__sg.tf
+|
+|__sqs.tf
+|
+|__variables.tf
+|
+|__vpc.tf
 
 
 
@@ -111,7 +129,6 @@ Notice the `/scripts` folder in the repo. For each service in the `ec2.tf` file,
 We install Docker in each service's running ec2 instance as well as the CloudWatch agent to add logs to CloudWatch for telemetry at runtime.
 
 <br />
-
 
 [Back to TOC](#table-of-contents-toc)
 

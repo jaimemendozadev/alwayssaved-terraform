@@ -8,8 +8,32 @@
 #
 #   terraform import aws_ses_domain_identity.alwayssaved alwayssaved.com
 #
+# ---------------------------------------------------------------------
+# READ ME IF "terraform destroy" EVER FAILS ON THIS RESOURCE:
+#
+# prevent_destroy below is intentional, not a bug. SES domain
+# verification takes several minutes to re-propagate through DNS every
+# time it's torn down and recreated. Since this project gets destroyed
+# and rebuilt often during dev, this flag stops THIS resource (and only
+# this one) from being wiped out along with the EC2/SQS/ALB stuff.
+#
+# If you actually want to delete this for good (e.g. retiring the
+# domain, or migrating SES to a different AWS account):
+#   1. Remove the `lifecycle { prevent_destroy = true }` block below
+#   2. Run `terraform apply` once (no infra changes, just updates state
+#      to drop the protection)
+#   3. THEN `terraform destroy` will be able to remove it
+#
+# Until you do that, `terraform destroy` will error out specifically on
+# this resource and stop — that's the safety working as intended, not
+# something broken. No other resources are affected by that error.
+# ---------------------------------------------------------------------
 resource "aws_ses_domain_identity" "alwayssaved" {
   domain = "alwayssaved.com"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 #################################################
