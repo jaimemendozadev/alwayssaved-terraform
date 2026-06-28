@@ -86,6 +86,23 @@ resource "aws_lb_listener" "https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.frontend_target_group.arn
   }
+
+  # WHY THIS depends_on EXISTS:
+  # certificate_arn above only proves the cert was REQUESTED from ACM —
+  # not that ACM has actually finished validating + issuing it yet.
+  # Without this line, Terraform creates this listener the instant the
+  # cert resource exists, which races against DNS propagation for the
+  # validation CNAME records (in certificate_manager.tf) and fails with:
+  #   "UnsupportedCertificate: ...must have a fully-qualified domain
+  #    name, a supported signature, and a supported key size"
+  # (That error message is misleading — it really means "not validated
+  # yet", not "something is wrong with this cert".)
+  #
+  # aws_acm_certificate_validation.cert_validation_complete (defined in
+  # certificate_manager.tf) is the resource that actually polls ACM
+  # until status = ISSUED. This depends_on forces Terraform to wait for
+  # that polling to finish before attempting to create this listener.
+  depends_on = [aws_acm_certificate_validation.cert_validation_complete]
 }
 
 
@@ -148,4 +165,10 @@ resource "aws_lb_listener" "llm_https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.llm_external.arn
   }
+
+  # Same reasoning as aws_lb_listener.https above — wait for ACM to
+  # actually finish issuing the cert (not just requesting it) before
+  # this listener tries to attach it. See the comment on that resource
+  # for the full explanation of the race condition this prevents.
+  depends_on = [aws_acm_certificate_validation.llm_cert_validation]
 }
